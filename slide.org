@@ -1,0 +1,737 @@
+#+TITLE: Live-DEMO 用投影片
+#+AUTHOR: coldnew
+#+EMAIL: coldnew.tw@gmail.com
+#+DATE: <2017-08-04 Fri 23:13>
+#+LaTeX_CLASS: coscup2017-article
+
+#+INFOJS_OPT: view:info toc:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="http://raw.githubusercontent.com/SebastianRose/org-info-js/master/stylesheet.css"/>
+
+#+SEQ_TODO: TODO | DONE
+#+STARTUP: logdone
+#+OPTIONS: toc:nil num:nil ^:t
+
+#+LINK: org-mode     http://orgmode.org
+#+LINK: spacemacs    https://github.com/syl20bnr/spacemacs
+#+LINK: emacs        https://www.gnu.org/s/emacs/
+
+* 介紹                                                       :intro:
+
+- 題目
+
+  org-mode 與工作流: 為何我離不開 emacs
+
+- 簡介
+
+  如果你在路上抓到使用 Emacs 的人，問說為何繼續用 Emacs ? 十個有九個會說因為 Emacs 有 org-mode。 究竟 org-mode 有何魔力呢? 本次介紹延伸自講者於 2013 年在 COSCUP 的演講「[[http://coldnew.github.io/COSCUP2013_org-mode/slide.html][Org-mode : Emacs 下的瑞士軍刀]]」，開頭會先介紹 org-mode，並帶自如何在 Emacs 下透過 org-mode 管理代辦事項、撰寫工作文件 … 等實務上的應用。
+
+- 時間
+
+  COSCUP 2017 2017/08/07 16:20 ~ 16:40
+
+* 構思                                                       :design:
+
+在 2013 年我所講的 [[http://coldnew.github.io/COSCUP2013_org-mode/slide.html][Org-mode Emacs 下的瑞士軍刀]] 個人感覺是把大部分的東西基本帶過，但是偏向 『[[https://zh.wikipedia.org/zh-tw/文学编程][文學編程]]』(Literate programming)  的形式。
+
+(並且由於當時經驗不足，講的很趕)
+
+這次希望可以針對以下幾點進行進一步的說明：
+
+- 基本 org-mode 語法介紹 (3 分鐘)
+
+- 時間管理 (org-clock-in, org-clock-out) (3 分鐘)
+
+- Agenda (5 分鐘)
+
+- Capture (3 分鐘)
+
+- 文件輸出 (剩下時間)
+
+注意到我只有 =20 分鐘= 的時間可以講，所以針對以上東西進行重點介紹。
+
+這次著重在個人使用 [[org-mode][org-mode]] 於工作上的經驗。
+
+* 前置設定                                                   :elisp:
+
+這是為了讓這場演講可以順利運作的 elisp 設定，我們在這邊預先設定好一些變數
+
+這會讓本 DEMO 的範例可以順利運作的函式，請對其使用 =C-c C-c= 進行 eval
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-directory (file-name-directory (buffer-file-name)))
+
+  (setq org-agenda-files (list org-directory))
+
+  (require 'find-lisp)
+  (setq org-agenda-files
+        (find-lisp-find-files org-directory "\.org$"))
+
+  (setq org-default-notes-file (concat org-directory "TODO.org"))
+
+  ;; bind clock-in/clock-out to C-. and C-,
+  (global-set-key (kbd "C-x .") 'org-clock-in)
+  (global-set-key (kbd "C-x ,") 'org-clock-out)
+
+  (org-indent-mode t)
+  (setq org-use-speed-commands t)
+#+END_SRC
+
+* 投影片使用                                                 :elisp:
+
+此次 DEMO 採用 [[https://github.com/takaxp/org-tree-slide][org-tree-slide]] 進行線上 DEMO 來展示
+
+#+BEGIN_SRC emacs-lisp
+  (package-install 'org-tree-slide)
+
+  (defun my/slide-show-start ()
+    "Start this slideshow."
+    (interactive)
+    ;; 使用 simple profile
+    (org-tree-slide-simple-profile)
+    ;; 跳過 level 3 標題
+    (setq org-tree-slide-skip-outline-level 3)
+    ;; 啟動 slide
+    (org-tree-slide-mode))
+
+  (defun my/slide-show-stop ()
+    "Stop this slideshow."
+    (interactive)
+    ;; 關閉 slide
+    (org-tree-slide-mode -1))
+
+  ;; 綁到 C-x [
+  (global-set-key (kbd "C-x [") 'my/slide-show-start)
+  ;; 綁到 C-x ]
+  (global-set-key (kbd "C-x ]") 'my/slide-show-stop)
+  ;; next/previous
+  (global-set-key (kbd "C-M-.") 'org-tree-slide-move-next-tree)
+  (global-set-key (kbd "C-M-,") 'org-tree-slide-move-previous-tree)
+#+END_SRC
+
+另外，為了讓大家可以看到我按了哪些按鍵，我使用 [[https://github.com/emacsmirror/showkey][showkey]] 搭配以下命令來顯示當下按鍵資訊在 **KEYS** 緩衝區
+
+#+BEGIN_SRC emacs-lisp
+  (package-install 'showkey)
+
+  (defun my/quick-show-key ()
+    "Create a window below and launch showkey mode"
+    (interactive)
+    (require 'showkey)
+    (showkey-log-mode t)
+    (delete-other-windows)
+    (split-window-vertically (floor (* 0.88 (window-height))))
+    (other-window 1)
+    (switch-to-buffer (get-buffer "*KEYS*"))
+    (other-window 1))
+
+  ;; 綁到 C-x \
+  (global-set-key (kbd "C-x \\") 'my/quick-show-key)
+#+END_SRC
+
+* 如何安裝 org-mode
+
+本場次演講現場展示的是 [[org-mode][org-mode]] 9.09 版本，目前 [[emacs][Emacs]] 預設的 org-mode 版本則是 8.x， 因此為了更好的體驗最好升級至最新的版本。
+
+(如果你是 [[spacemacs][spacemacs]] 的用戶，請參考 [[https://github.com/syl20bnr/spacemacs/tree/master/layers/%252Bemacs/org][Org layer]] 的說明。)
+
+一般的 [[emacs][Emacs]] 用戶，則請加入以下程式到你的 =~/.emacs.d= 去，這會幫你下載最新的 org-mode
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'package-archives
+               '("org" . "http://orgmode.org/elpa/") t)
+#+END_SRC
+
+然後更新套件資訊
+
+: M-x package-refresh-contents
+
+接下來使用以下方式安裝最新的 [[org-mode][org-mode]] (9.x)
+
+#+BEGIN_SRC emacs-lisp
+  (package-install 'org-plus-contrib)
+#+END_SRC
+
+* -----------------> 投影片開始
+* ﻿﻿﻿
+
+
+
+
+   org-mode 與工作流: 為何我離不開 emacs
+
+
+            李彥瑾 <[[https://coldnew.github.io][coldnew]]>
+
+
+ COSCUP 2017.08.06   16:20 ~ 16:40 / 20 min
+* 關於我                                                              :about:
+:講稿:
+我在網路上習慣使用的 ID 是 coldnew。使用 Emacs 自 2006 年至今，並有維護一些 emacs-lisp 套件。
+
+如果您對我的專案有興趣，可以到我的 GitHub 或是 Blog 看看 ^_^
+:END:
+
+- User id: =coldnew=
+- 自 2006 用 Emacs 到現在
+- 我的 Emacs-Lisp 專案列表:
+  + org-ioslide             + linum-ace      [deprecated]
+  + pangu-spacing           + org-remark     [deprecated]
+  + ac-octave               + org-pelican    [deprecated]
+  + linum-relative          + org-hexo       [deprecated]
+  + qml-mode                + emacs-blogit   [deprecated]
+  + left-pad.el             + org-html5slide [deprecated]
+  + eshell-autojump         + evil-elscreen  [deprecated]
+- 本質是 Embedded System RD
+- 混跡於台灣各 LISP 群組: [[https://emacser.tw][EmacsTW]]、[[https://clojure.tw][ClojureTW]]
+
+- GitHub: https://github.com/coldnew
+- Blog:   https://coldnew.github.io
+* 其實...
+
+
+
+COSCUP 2013
+
+[[http://coldnew.github.io/COSCUP2013_org-mode/slide.html][Org-mode : Emacs 下的瑞士軍刀]]
+
+by =coldnew=
+
+* org-mode 與基本語法                                                :markup:
+
+[[org-mode][org-mode]] 是類似 [[https://zh.wikipedia.org/zh-tw/Markdown][Markdown]] 的樣板語言，可以用來寫寫文件。
+
+此外，[[org-mode][org-mode]] 還適合:
+
+- 生成 HTML、PDF、Markdown 等檔案
+- 管理待辦事項
+- 專案規劃
+- 時間管理
+- 財務管理
+
+而這些事情，只要用 =純文字= 就可以辦到。
+
+** 基本組成
+
+[[org-mode]] 其實就是 =大綱模式= 的衍生版，一個文章是這樣組成的
+
+#+BEGIN_SRC org
+  ,* 關於 org-mode
+     介紹 org-mode 的各種用途。
+  ,** 時間管理
+     如何使用 org-mode 來進行時間管理。
+  ,** 產生文件檔
+  ,*** 產生 HTML 檔案
+  ,*** 產生 Latex 檔案
+#+END_SRC
+
+** 快捷鍵使用
+
+| 按鍵               | 用途                                |
+|--------------------+-------------------------------------|
+| TAB                | 折疊/打開標題和其內容               |
+| S-TAB              | 折疊/打開標題和其內容               |
+| M-RET              | 插入同一級標題                      |
+| M-Left/Right       | 將當前標題升級/降級 (減少/增加星星) |
+| M-S-right/M-S-left | 切換包含子項目的標題等級            |
+| C-*                | 將游標所在的那一行變為標題          |
+
+*** 快速瀏覽
+
+如果你有在你的 =~/.emacs.d= 設定好以下項目，則可以使用 org speed commands 去瀏覽你的文件
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-use-speed-commands t)
+#+END_SRC
+
+快速命令:
+
+將你的游標放置到標題欄 (headline)  的第一個字元的位置, 確定上面的命令設定好後，你就可以使用下面的命令來快速瀏覽你的文件
+
+n 下一個標題欄 (headline)
+p 上一個標題欄 (headline)
+u 回到父節點
+c 折疊/展開當前標題欄
+
+j 快速移動 這個命令會彈出一個選單，看你要根據怎樣的狀況進行移動
+? 看還有什麼命令可以用
+
+*** 切換標題欄的等級
+
+將游標放置在標題欄 (headline) 並使用 =M-right= =M-left= 來切換標題欄的等級 (level)
+
+你也可以使用 =M-S-right= 或 =M-S-left= 去切換包含子項目的標題欄等級
+
+當有在 =~/.emacs.d= 設定好以下命令的時候, 我們也可以用 org speed commands 去調整標題欄的等級
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-use-speed-commands t)
+#+END_SRC
+
+快速命令:
+
+r 將當前標題欄降級 (向右移動)
+R 將當前標題欄與子項目降級 (向右移動)
+l 將當前標題欄升級 (向左移動)
+L 將當前標題欄與子項目升級 (向右移動)
+
+*** 重新擺放標題欄順序
+
+將游標放置在標題欄 (headline) 並使用 =M-up= =M-down= 來切換標題欄的順序 (order)
+
+快速命令:
+
+U 將當前節點往上搬 (包含子項目)
+D 將當前節點往下搬 (包含子項目)
+
+** 列表
+
+| 列表類型 | 表達符號或方法               |
+|----------+------------------------------|
+| 無序列表 | - 、 + 、 *                  |
+| 有序列表 | 1. 或者 1) 開頭              |
+| 描述列表 | 使用 :: 將描述內容與項目分開 |
+
+- 這是項目一 :: 項目的定義
+- 這是項目二
+  + 項目二的子項目一
+  + 項目二的子項目二
+
+1. 條列式 1
+2. 條列式 2
+   1) 子項目 1
+   2) 子項目 2
+** 格式化字詞
+:講稿:
+org-mode 下對文字進行 markup 的方式和 Markdown 有點不一樣
+:END:
+
+*粗體*                 /斜體/
++刪除線+               H_2 O
+E=mc^2               =等寬字=
+_下劃線_
+
+被格式化的字詞，會根據要輸出的後端 (Latex、HTML) 等進行相對應的轉換
+
+** 程式碼區塊
+
+輸入 <s 後按下 TAB 展開 #+BEGIN_SRC ... #END_SRC 區塊，你可以透過 C-' 切換到該程式碼的 major-mode 後再切回來
+
+#+BEGIN_SRC C
+  #include <stdio.h>
+
+  int main(int argc, char *argv[])
+  {
+          printf("Hello, Org-mode!\n");
+          return 0;
+  }
+#+END_SRC
+
+<e 按下 TAB 產生 Example Block
+
+#+BEGIN_EXAMPLE
+  Example block 就不會對裡面的內容作而外的格式化
+#+END_EXAMPLE
+
+** 連結 (Links)
+
+[[org-mode][org-mode]] 支援很多種不同的連結形式，可以用 =M-x org-insert-link= 直接插入連結
+
+#+BEGIN_EXAMPLE
+  https://www.google.com
+  file:/home/coldnew/test.png
+  news:comp.emacs
+  irc:/irc.com/#emacs
+  mailto:who@email.net
+  file:assets/do_mount.sh::5
+  [[file:assets/do_mount.sh][mount the file]]
+#+END_EXAMPLE
+
+
+** 暫存當前位置 (文件內連結)
+
+你也可以使用 =C-c %= (org-mark-ring-push) 暫存當前你移動的位置然後移動到別處
+
+要切回來的時候用 =C-c &= (org-mark-ring-goto) 就可以切到上一個暫存的位置
+
+也可以用 =M-x org-store-link= 將當前位置存起來，再使用 =M-x org-insert-link= 插入連結
+
+** 表格
+:MANUAL:
+http://orgmode.org/manual/Tables.html
+:END:
+
+- 使用 =|= 作為表格分隔
+- 按下 =TAB= 可以再表格內切換
+- 輸入 =|-= 再按下 =TAB= 可以產生分隔線
+
+| Name  | Phone | Age |
+|-------+-------+-----|
+| Peter |  1234 | 123 |
+| Anna  |  4321 |  25 |
+
+** 表格 (試算表)
+:MANUAL:
+http://orgmode.org/worg/org-tutorials/org-spreadsheet-intro.html
+:END:
+
+[[org-mode][org-mode]] 的表格也具有試算表的功能，游標移動到 #+TBLFM: 後，使用 =C-c C-c= 看看
+
+#+NAME: fruit_expand
+| 名稱 | 單價 (NT) | 數量 | 花費 |
+|------+-----------+------+------|
+| 蘋果 |       5.0 |  3.0 |      |
+| 香蕉 |      20.0 | 10.0 |      |
+| 鳳梨 |     100.0 |  2.0 |      |
+|------+-----------+------+------|
+| 總價 |           |      |      |
+#+TBLFM: $4=$2*$3::@5$4=vsum(@2$4..@3$4)
+
+* 任務管理 [0%]                                                        :task:
+:MANUAL:
+http://orgmode.org/manual/TODO-basics.html#TODO-basics
+:END:
+
+   對大綱使用 =C-c C-t= 選擇或切換 TODO/DONE 狀態
+   (或是使用 =S-<right>= 切換狀態)
+
+**** 準備這場演講
+**** 開始演講
+
+** 複選框 (ckeckbox) [0/3]
+:MANUAL:
+http://orgmode.org/manual/Checkboxes.html
+:END:
+
+可以用 =M-S-return= (org-insert-todo-heading) 快速增加新的欄位
+
+使用 =C-c C-c= 勾選/取消 項目
+
+- [ ] task 1
+- [ ] task 2
+- [ ] task 3
+
+** 標籤 (Tag)
+:MANUAL:
+http://orgmode.org/manual/Tags.html
+:END:
+
+可以對項目使用 =C-c C-c= 加入標籤
+
+(標籤具有繼承性，子項目會具有父項目的標籤屬性)
+
+#+BEGIN_SRC org
+  ,* 工作項目                                                             :work:
+  ,** 專案 A                                                              :prjA:
+  ,*** TODO issue #1234                                                 :issue:
+#+END_SRC
+
+** 項目計時
+:講稿:
+當我們有待辦事項後，也許會希望知道這件事情的處理時間，這時候就可以透過 org-mode 的 clocking commands 來進行處理。
+
+- MANUAL
+
+  http://orgmode.org/manual/Clocking-commands.html
+:END:
+
+(建議將以下命令綁成全域命令，這樣在不是 org-mode 下也可以用)
+
+| 按鍵        | 命令              | 用途               |
+|-------------+-------------------+--------------------|
+| C-c C-x C-i | org-clock-in      | 在當前項目開始計時 |
+| C-c C-x C-o | org-clock-out     | 結束當前的計時     |
+| C-c C-x C-q | org-clock-cancel  | 取消當前的計時     |
+| C-c C-x C-d | org-clock-display | 顯示整體計時結果   |
+| C-c C-x C-r | org-clock-report  | 顯示報表           |
+
+- 只用來紀錄 =工作時間=
+- 在處理某項目時開始計時，停止處理的話暫停他
+- 在 Agenda view 上移動到項移動到項目後
+  + 按下 I 開始計時
+  + 按下 O 結束計時
+
+** 進度管理
+:講稿:
+:END:
+
+使用 =C-c C-s= 指定任務的時間表 (schedule)
+使用 =C-c C-d= 指定任務的截止日期 (deadline)
+
+#+BEGIN_SRC org
+  ,* 某某任務
+    DEADLINE: <2017-08-20 Sun> SCHEDULED: <2017-08-09 Wed>
+#+END_SRC
+* 排程 (Agenda)                                                      :agenda:
+:講稿:
+:END:
+
+** 用 Agenda View 檢視當前緩衝區的任務
+SCHEDULED: <2017-08-06 Sun>
+
+
+使用 =C-c a < a= 來查看當前檔案的 agenda (排程) 資訊
+
+在 agenda-view 裡面:
+
+t 可以將標記為 =TODO= 的項目變成 =DONE=
+g 刷新 agenda-view
+v 選擇觀看 日/星期/月 或者其他狀況的資訊
+
+** 設定要被加入 Agenda-View 的檔案
+
+(這邊假設我們要放入 Agenda-View 的檔案在 ~/Dropbox/Org/ 裡面)
+
+在你的 =~/.emacs.d= 加入以下命令
+
+#+BEGIN_SRC emacs-lisp
+  ;; 預設的 org-mode 檔案位置
+  (setq org-directory "~/Dropbox/Org")
+  ;; 會加入 Agenda-View 的檔案
+  (setq org-agenda-files
+        (list "~/Dropbox/Org/Work.org"
+              "~/Dropbox/Org/Life.org"))
+#+END_SRC
+
+好了後執行 =C-c aa= 進去 Agenda-View 看看
+
+** 根據狀況進入不同的 Agenda-View
+
+使用 =C-c a= 進入到 Agenda 選單:
+
+a 顯示當日或是本週的任務排程 (agenda)
+L 顯示目前緩衝區的任務線
+t 顯示所有的代辦事項 (TODO)
+T 顯示特定類型的待辦事項 (TODO, DONE ... etc) 選一
+m 顯示有符合標籤 (tag) 的事項
+M 顯示有符合標籤 (tag) 的代辦 (TODO) 事項
+s 根據搜索結果顯示符合的事項
+
+* 客製化 Agenda 命令
+:MANUAL:
+http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-agenda-custom-commands
+        '(("w" . "工作任務")
+          ("wa" "特急件" tags-todo "work+PRIORITY=\"A\"")
+          ("wb" "一般件" tags-todo "work+PRIORITY=\"B\"") ; <= 預設優先權是 B
+          ("wc" "慢慢來" tags-todo "work+PRIORITY=\"C\"")
+          ("l"  "待處理書籤" tags-todo "link"))) ; <= 後面講 Capture 會提到
+#+END_SRC
+
+** 使用月曆的方式看 Agenda
+
+如果習慣用月曆軟體來看排程的話，在 Emacs 下有一套 [[https://github.com/kiwanami/emacs-calfw][emacs-calfw]] 可以在 Emacs 下顯示月曆
+
+我們首先安裝支援 [[org-mode][org-mode]] 的版本
+
+#+BEGIN_SRC emacs-lisp
+  (package-install 'calfw-org)
+#+END_SRC
+
+接著就可以用以下命令召喚他出來 (在 calfw 裡面，輸入 D 切換到當天檢視, M 切換回月檢視)
+
+#+BEGIN_SRC emacs-lisp
+  (require 'calfw-org)
+  (cfw:open-org-calendar)
+#+END_SRC
+
+* 任務捕獲 (Capture)                                                :capture:
+
+- 當你正在作某件事，比如正在 live demo
+- 突然電話響了, 是某個大人物打過來的所以不能掛斷
+- 你希望紀錄這份對話，但是又不想影響到現在正在做的工作
+- C-c c (org-capture) 來紀錄這件事
+- 選擇樣板，將你要紀錄的東西寫下來 =C-c C-c= 離開回去工作
+
+#+BEGIN_SRC emacs-lisp
+  ;; 預設將 Capture 的資訊存到這個檔案內
+  (setq org-default-notes-file "~/Dropbox/Org/TODO.org")
+#+END_SRC
+
+** 進階設定 (1)
+:MANUAL:
+http://orgmode.org/manual/Capture-templates.html
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        '(("t" "TODO" entry (file+headline "" "Tasks") "* TODO %?\n %i\n")
+          ("n" "NOTE" entry (file+headline "" "Tasks") "* NOTE %?\n %i\n %a")
+          ("l" "Links" entry (file+headline "" "Links") "* TODO %? :link:\nSCHEDULED: <%<%Y-%m-%d %a>>\n %i\n %a")))
+#+END_SRC
+
+** 進階設定 (2)
+:MANUAL:
+http://orgmode.org/manual/Capture-templates.html
+:END:
+
+#+BEGIN_SRC emacs-lisp
+  (setq org-capture-templates
+        '(("t" "Todo" entry (file+headline "~/gtd.org" "Tasks")
+               "* TODO %?\n  %i\n  %a")
+          ("j" "Journal" entry (file+datetree "~/journal.org")
+               "* %?\nEntered on %U\n  %i\n  %a")))
+#+END_SRC
+
+* 休息一下                                                :break:cat:
+
+講到這邊，大約 =15 分鐘了= 。COSCUP 的傳統就是演講超過 15 分鐘，就要放隻貓緩和氣氛，所以我放個 [[https://zh.wikipedia.org/zh-tw/彩虹貓][Nyan Cat]] 在 Emacs 上。
+
+(本場次主要使用 Emacs 直接進行演講 -> live coding)
+
+你可以使用以下方式安裝 [[https://github.com/wasamasa/zone-nyan][zone-nyan]] (對下面 src-block 使用 =C-c C-c= 進行 evaluate)
+
+#+BEGIN_SRC emacs-lisp
+  (package-install 'zone-nyan)
+#+END_SRC
+
+然後我們就可以這樣叫出他來 (對下面 src-block 使用 =C-c C-c= 進行 evaluate)
+
+#+BEGIN_SRC emacs-lisp
+  (require 'zone-nyan)
+  ;; play sound by `mpv'
+  (setq zone-nyan-bg-music-program "mpv"
+        zone-nyan-bg-music-args
+        `("-loop" "0" ,(expand-file-name (concat org-directory "assets/nyan.mp3"))))
+  (zone-nyan-preview)
+#+END_SRC
+
+* 文件撰寫
+
+我們可以將 [[org-mode]] 轉換成 Markdown、PDF、HTML ...etc。
+
+** 文學編程 (Literate programming)
+
+參考範例:
+
+- [[file:examples/hello-c/hello-c.org][C 語言版本]]
+- [[file:examples/hello-R/hello-R.org][R 語言版本]]
+
+** 匯出成 Latex -> PDF
+
+使用 =M-x org-latex-export-to-pdf= 轉換成 PDF
+
+在 =~/.emacs.d= 裡面要加入以下設置
+
+#+BEGIN_SRC emacs-lisp
+  ;; This buffer is for text that is not saved, and for Lisp evaluation.
+  ;; To create a file, visit it with <open> and enter text in its buffer.
+  (require 'ox-latex)
+
+  (setq org-latex-pdf-process
+        (if (executable-find "latexmk")
+            '("latexmk -pdflatex=xelatex -pdf -silent --shell-escape -f %f")
+            '("xelatex -interaction nonstopmode --shell-escape %f"
+              "xelatex -interaction nonstopmode --shell-escape %f")))
+
+  ;; To use this, add following to your org-mode file
+  ;;
+  ;;    #+LaTeX_CLASS: coscup2017-article
+  ;;
+  (add-to-list 'org-latex-classes
+               '("coscup2017-article"
+                 "\\documentclass[12pt,a4paper]{article}
+                  \\usepackage[T1]{fontenc}
+                  \\usepackage{fontspec}
+                  \\usepackage{xeCJK}
+                  \\setCJKmainfont{Hiragino Sans GB W3}
+                  \\XeTeXlinebreaklocale \"zh\"
+                  \\XeTeXlinebreakskip = 0pt plus 1pt
+                  \\usepackage{graphicx}
+                  \\usepackage{tikz}
+                  \\usepackage[bookmarks=true,colorlinks,urlcolor=blue]{hyperref}
+                  \\defaultfontfeatures{Mapping=tex-text}
+                  \\setmonofont[Scale=0.8]{Monaco}
+                  \\usepackage{geometry}
+                  \\usepackage{minted}
+                  \\usemintedstyle{emacs}
+                  \\geometry{a4paper, textwidth=6.5in, textheight=8in,
+                              marginparsep=10pt, marginparwidth=.6in}
+                  \\pagestyle{plain}
+                  \\linespread{1.5}
+                  \\title{}
+                        [NO-DEFAULT-PACKAGES]
+                        [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")
+                 ))
+
+
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options
+        '(("frame" "lines")
+          ("fontsize" "\\scriptsize")
+          ("linenos" "true")))
+#+END_SRC
+
+#+RESULTS:
+| frame    | lines       |
+| fontsize | \scriptsize |
+| linenos  | true        |
+
+** 匯出成 HTML (Info.js)
+
+[[http://orgmode.org/worg/code/org-info-js/index.html][Info.js]] 是可以將 org-mode 文檔變成像是 HTML 版本的 Info 文件的工具 (內建在 org-mode 中)
+
+在 org-mode 檔案前面加上以下東西後，用 =M-x org-html-export-to-html= 輸出成 HTML
+
+#+BEGIN_SRC org
+  ,#+INFOJS_OPT: view:info toc:nil
+#+END_SRC
+
+http://orgmode.org/worg/code/org-info-js/index.html
+
+** 匯出成 HTML (org-html-themes)
+
+[[https://github.com/fniessen/org-html-themes][org-html-themes]] 整合了兩種不錯的 HTML 版本的 org-mode 主題，具體請參見以下連結
+
+https://github.com/fniessen/org-html-themes
+
+** 寫 blog / 工作日誌
+
+我使用 [[https://hexo.io][Hexo]] 搭配自己維護的 [[https://github.com/coldnew/hexo-renderer-org][hexo-renderer-org]] (/fork/) 來撰寫 blog 以及工作日誌
+
+相關範例請見: https://coldnew.github.io/hexo-org-example/
+
+* Thanks
+
+本場次演講的範例檔案可以在以下位置下載:
+
+https://github.com/coldnew/COSCUP2017_org-mode
+
+若對 [[org-mode][org-mode]] / [[emacs][Emacs]] 有興趣或有問題想問的，歡迎來 irc/telegram 和我們討論
+
+具體邀請連結請見 [[https://emacser.tw][EmacsTW 網站]]
+
+* -----------------> 投影片結束
+* 延伸閱讀
+
+這邊整理我看過覺得不錯的關於 org-mode 的資訊連結。
+
+** 視頻
+
+- [[https://www.youtube.com/watch?v=fgizHHd7nOo][org mode is awesome]]
+
+- [[https://www.youtube.com/watch?v=jmZP9To4kv8][我的 Org mode GTD 工作流 - 子龍山人]]
+
+- [[https://www.youtube.com/watch?v=dljNabciEGg&t=1455s][Literate Devops with Emacs]]
+
+** 文章
+
+- [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life In Plain Text!]]
+- [[http://blog.csdn.net/dc_726/article/details/8623879][{轉} 用 Org-mode 实践《奇特的一生》]]
+- [[https://github.com/lujun9972/emacs-document/blob/master/org-mode/文学编程简介.org][文学编程简介]]
+
+** 其他時間/工作管理相關
+
+- [[http://alberthuang314.blogspot.tw/2012/12/blog-post_12.html][寫實驗紀錄或工作日誌的重要性]]
+
+- [[https://medium.com/@bobchao/%25E7%2595%25AA%25E8%258C%2584%25E5%25B7%25A5%25E4%25BD%259C%25E6%25B3%2595-fd35fd03adb0][番茄工作法]]
+
+- [[https://murphymind.blogspot.tw/2007/04/2-getting-things-done.html][{閱讀筆記} 高效能的待辦事項管理法: Getting Things Done (by David Allen)]]

@@ -1,0 +1,37 @@
+#+TITLE: 生活
+#+STARTUP: logdone
+#+SEQ_TODO: TODO(t) | DONE(d) CANCELLED(c)
+#+FILETAGS: :life:
+
+* 運動                                                              :fitness:
+
+** TODO 慢跑 10 公里
+   SCHEDULED: <2017-08-12 Sat 18:00 +1w>
+   :PROPERTIES:
+   :LAST_REPEAT: [2017-08-05 Sat 19:42]
+   :END:
+
+
+   - State "DONE"       from "TODO"       [2017-08-05 Sat 19:42]
+** TODO 上健身房
+   SCHEDULED: <2017-08-06 Sun 20:00 +1d>
+
+* 約會                                                                :girls:
+* 家庭                                                               :family:
+
+** TODO 父親節
+   SCHEDULED: <2017-08-08 Tue>
+
+* 其他
+** CANCELLED COSCUP 2017 BoF
+   CLOSED: [2017-08-05 Sat 19:42] SCHEDULED: <2017-08-05 Sat 18:30>
+
+   Emacs & Clojure 社群: [[http://maps.google.com/maps/api/staticmap?center=25.039550,121.565118&size=1260x297&sensor=false&zoom=15&markers=|25.039550,121.565118&visible][信義誠品 B1 金色三麥]]
+
+** DONE COSCUP 2017 到達會場
+   CLOSED: [2017-08-06 Sun 14:28] DEADLINE: <2017-08-06 Sun 13:00>
+** TODO COSCUP 2017 演講時間
+   SCHEDULED: <2017-08-06 Sun 16:20 - 16:40>
+   :LOGBOOK:
+   CLOCK: [2017-08-06 Sun 02:00]--[2017-08-06 Sun 02:00] =>  0:00
+   :END:

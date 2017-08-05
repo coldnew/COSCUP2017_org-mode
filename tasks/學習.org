@@ -1,0 +1,54 @@
+#+TITLE: 學習
+#+STARTUP: logdone
+#+SEQ_TODO: TODO(t) WAITING(w) | DONE(d) CANCELLED(c)
+#+FILETAGS: :study:
+
+* 2017 年暑期系統軟體課程：台北場次                                   :jserv:
+
+  課程連結: https://hackmd.io/s/BJRtkreHW
+
+  筆記連結: https://coldnew.github.io/embedded-summer-2017/
+
+** DONE 寫課前測驗題 [3/5]
+   CLOSED: [2017-07-16 Sun 13:16] DEADLINE: <2017-07-17 Mon>
+   :LOGBOOK:
+   CLOCK: [2017-07-14 Fri 22:35]--[2017-07-14 Fri 23:30] =>  0:55
+   CLOCK: [2017-07-14 Fri 19:35]--[2017-07-14 Fri 20:06] =>  0:31
+   CLOCK: [2017-07-13 Thu 21:02]--[2017-07-13 Thu 23:15] =>  2:13
+   CLOCK: [2017-07-12 Wed 20:01]--[2017-07-12 Wed 23:01] =>  3:00
+   :END:
+
+   至少完成 =三題= 。
+
+   連結: https://hackmd.io/s/B1wb8CyHb
+
+   - [X] Q1
+   - [ ] Q2
+   - [X] Q3
+   - [ ] Q4
+   - [X] Q5
+** DONE 參與第一天課程 (2017/07/22)
+   CLOSED: [2017-07-22 Sat 09:00] SCHEDULED: <2017-07-22 Sat>
+** DONE 參與第二天課程 (2017/07/23)
+   CLOSED: [2017-07-22 Sun 09:00] SCHEDULED: <2017-07-23 Sun>
+
+* 書單: Linux Kernel 相關 [1/4]                                  :book:linux:
+
+  - [X] [[http://www.amazon.com/Linux-Kernel-Development-3rd-Edition/dp/0672329468][Linux Kernel Development (3rd Edition)]]
+
+  - [ ] [[http://shop.oreilly.com/product/9780596005658.do][Understanding Linux Kernel]]
+
+  - [ ] [[http://www.kroah.com/lkn/][Linux Kernel in a Nutshell]]
+
+  - [ ] [[http://www.wrox.com/WileyCDA/WroxTitle/Professional-Linux-Kernel-Architecture.productCd-0470343435.html][Professional Linux Kernel Architecture]]
+
+* 書單: C/C++ 相關 [2/3]                                         :book:c:cpp:
+
+  - [X] [[https://www.amazon.com/C-Programming-Modern-Approach-2nd/dp/0393979504][C Programming: A Modern Approach, 2nd Edition]]
+
+  - [X] [[https://www.amazon.com/Programming-Language-Brian-W-Kernighan/dp/0131103628/ref=pd_sbs_14_t_0?_encoding=UTF8&psc=1&refRID=60R1D2CHBA8DHYT6JNMN][The C Programming Language 2nd Edition]]
+
+  - [ ] [[http://icube-icps.unistra.fr/img_auth.php/d/db/ModernC.pdf][Modern C]]
+* 書單: RISC-V 相關 [0/1]                                        :book:riscv:
+
+  - [ ] [[https://www.amazon.com/Computer-Organization-Design-RISC-V-Architecture/dp/0128122757][Computer Organization and Design RISC-V Edition]]

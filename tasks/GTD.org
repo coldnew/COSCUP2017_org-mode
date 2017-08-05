@@ -1,0 +1,95 @@
+#+TITLE: GTD (Getting Things Done)
+#+STARTUP: logdone
+#+SEQ_TODO: TODO(t) WAITING(w) | DONE(d) CANCELLED(c)
+#+FILETAGS: :gtd:
+
+:MANUAL:
+https://orgmode.org/manual/The-clock-table.html
+:END:
+
+針對有興趣的欄位，使用 =C-c C-x C-r= (org-clock-report) 產生報告。
+
+* 每日回顧                                                            :daily:
+  #+BEGIN: clocktable :maxlevel 5 :scope agenda-with-archives  :block today :fileskip0 t :indent t
+  #+CAPTION: Clock summary at [2017-08-06 Sun 08:21], for Sunday, August 06, 2017.
+  | File      | Headline                                | Time   |      |
+  |-----------+-----------------------------------------+--------+------|
+  |           | ALL *Total time*                        | *6:48* |      |
+  |-----------+-----------------------------------------+--------+------|
+  | 工作.org  | *File time*                             | *6:39* |      |
+  |           | 專案 A                                  | 6:39   |      |
+  |           | \_  設計電路                            |        | 4:19 |
+  |           | \_  完成 PCB Layout                     |        | 1:30 |
+  |           | \_  送洗 PCB Layout                     |        | 0:50 |
+  |-----------+-----------------------------------------+--------+------|
+  | slide.org | *File time*                             | *0:09* |      |
+  |           | org-mode 與基本語法                     | 0:04   |      |
+  |           | \_  格式化字詞                          |        | 0:01 |
+  |           | \_  程式碼區塊                          |        | 0:01 |
+  |           | \_  暫存當前位置 (文件內連結)           |        | 0:01 |
+  |           | \_  表格 (試算表)                       |        | 0:01 |
+  |           | 排程 (Agenda)                           | 0:05   |      |
+  |           | \_  用 Agenda View 檢視當前緩衝區的任務 |        | 0:05 |
+  #+END: clocktable
+
+* 每週回顧                                                           :weekly:
+  #+BEGIN: clocktable :maxlevel 5 :scope agenda-with-archives  :block thisweek :fileskip0 t :indent t
+  #+CAPTION: Clock summary at [2017-08-06 Sun 10:22], for week 2017-W31.
+  | File      | Headline                 | Time      |         |
+  |-----------+--------------------------+-----------+---------|
+  |           | ALL *Total time*         | *1d 7:53* |         |
+  |-----------+--------------------------+-----------+---------|
+  | 工作.org  | *File time*              | *1d 7:50* |         |
+  |           | 專案 A                   | 1d 2:21   |         |
+  |           | \_  設計電路             |           | 1d 0:01 |
+  |           | \_  完成 PCB Layout      |           |    1:30 |
+  |           | \_  送洗 PCB Layout      |           |    0:50 |
+  |           | 專案 Y                   | 5:29      |         |
+  |           | \_  寫程式 Hello World   |           |    0:39 |
+  |           | \_  寫圖形版本的迷宮老鼠 |           |    3:36 |
+  |           | \_  撰寫教學投影片       |           |    1:14 |
+  |-----------+--------------------------+-----------+---------|
+  | draft.org | *File time*              | *0:03*    |         |
+  |           | 投影片使用               | 0:02      |         |
+  |           | 待辦事項 (TODO)          | 0:01      |         |
+  |           | \_  建立待辦事項         |           |    0:01 |
+  #+END: clocktable
+
+* 每月回顧                                                          :monthly:
+  #+BEGIN: clocktable :maxlevel 5 :scope agenda-with-archives  :block thismonth :fileskip0 t :indent t
+  #+CAPTION: Clock summary at [2017-08-05 Sat 20:20], for August 2017.
+  | File      | Headline                 | Time      |         |
+  |-----------+--------------------------+-----------+---------|
+  |           | ALL *Total time*         | *1d 7:53* |         |
+  |-----------+--------------------------+-----------+---------|
+  | 工作.org  | *File time*              | *1d 7:50* |         |
+  |           | 專案 A                   | 1d 2:21   |         |
+  |           | \_  設計電路             |           | 1d 0:01 |
+  |           | \_  完成 PCB Layout      |           |    1:30 |
+  |           | \_  送洗 PCB Layout      |           |    0:50 |
+  |           | 專案 Y                   | 5:29      |         |
+  |           | \_  寫程式 Hello World   |           |    0:39 |
+  |           | \_  寫圖形版本的迷宮老鼠 |           |    3:36 |
+  |           | \_  撰寫教學投影片       |           |    1:14 |
+  |-----------+--------------------------+-----------+---------|
+  | draft.org | *File time*              | *0:03*    |         |
+  |           | 投影片使用               | 0:02      |         |
+  |           | 待辦事項 (TODO)          | 0:01      |         |
+  |           | \_  建立待辦事項         |           |    0:01 |
+  #+END: clocktable
+
+* 上個月回顧                                                        :monthly:
+  #+BEGIN: clocktable :maxlevel 5 :scope agenda-with-archives  :block lastmonth :fileskip0 t :indent t
+  #+CAPTION: Clock summary at [2017-08-05 Sat 20:20], for July 2017.
+  | File     | Headline                          | Time   |      |
+  |----------+-----------------------------------+--------+------|
+  |          | ALL *Total time*                  | *9:56* |      |
+  |----------+-----------------------------------+--------+------|
+  | 工作.org | *File time*                       | *3:17* |      |
+  |          | 專案 Y                            | 3:17   |      |
+  |          | \_  理解 Yocto project 的使用     |        | 3:17 |
+  |----------+-----------------------------------+--------+------|
+  | 學習.org | *File time*                       | *6:39* |      |
+  |          | 2017 年暑期系統軟體課程：台北場次 | 6:39   |      |
+  |          | \_  寫課前測驗題 [3/5]            |        | 6:39 |
+  #+END: clocktable

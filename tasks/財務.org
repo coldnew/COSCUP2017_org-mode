@@ -1,0 +1,16 @@
+#+TITLE: 財務
+#+STARTUP: logdone
+#+SEQ_TODO: TODO(t) | DONE(d) CANCELLED(c)
+
+* 信用卡
+** TODO [#C] 信用卡轉帳
+   SCHEDULED: <2017-08-19 Sat +1m>
+
+* 購買東西
+
+** TODO 買新的筆電                                                      :buy:
+   :PROPERTIRES:
+   :Effort: 2h
+   :Cost: $1300
+   :END:
+   DEADLINE: <2017-09-12 Tue>

@@ -1,0 +1,70 @@
+#+TITLE: C 語言與文學編程
+
+* 前置作業
+
+  將以下程式加入到你的 =~/.emacs.d= 去
+
+  #+BEGIN_SRC emacs-lisp
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (C . t)
+       (shell . t)))
+  #+END_SRC
+
+* hello.c
+
+  #+BEGIN_SRC c :tangle hello.c
+    #include <stdio.h>
+    int main(int argc, char *argv[])
+    {
+	    printf("Hello World\n");
+	    return 0;
+    }
+  #+END_SRC
+
+* Makefile
+
+  #+BEGIN_SRC makefile :tangle Makefile
+    CC      = gcc
+    CFLAGS  = -g
+    RM      = rm -f
+
+    default: all
+
+    all: hello
+
+    hello: hello.c
+	    $(CC) $(CFLAGS) -o hello hello.c
+
+    clean veryclean:
+	    $(RM) hello
+  #+END_SRC
+* 編譯並執行
+
+  先透過 =org-babel-tangle= 將 SRC-Block 匯出成檔案
+
+  #+BEGIN_SRC emacs-lisp
+    (org-babel-tangle)
+  #+END_SRC
+
+  #+RESULTS:
+  | hello.c | Makefile |
+
+  執行 =make= 進行編譯
+
+  #+BEGIN_SRC sh
+    make
+  #+END_SRC
+
+  #+RESULTS:
+  : gcc -g -o hello hello.c
+
+  執行編譯出來的 hello 執行檔
+
+  #+BEGIN_SRC sh
+    ./hello
+  #+END_SRC
+
+  #+RESULTS:
+  : Hello World

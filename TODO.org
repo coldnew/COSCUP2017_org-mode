@@ -1,0 +1,20 @@
+* Tasks
+** DONE 測試 Capture
+   DEADLINE: <2017-08-06 Sun> SCHEDULED: <2017-08-05 Sat 16:00>
+
+   [[file:~/Workspace/coscup2017/d2.org::*捕獲任務%20(Capture)][捕獲任務 (Capture)]]
+** NOTE 你好
+
+  [[file:~/Workspace/coscup2017/slide.org::*進階設定][進階設定]]
+** TODO hello world
+   SCHEDULED: <2017-08-06 Sun>
+** TODO 寫個 XXXX
+   DEADLINE: <2017-08-09 Wed>
+* Links
+** TODO org-html-themes 網址                                           :link:
+
+   https://github.com/fniessen/org-html-themes
+** TODO htpps://google.com                                             :link:
+   SCHEDULED: <2017-08-06 Sun>
+
+  [[file:~/Workspace/coscup2017/slide.org::*進階設定%20(1)][進階設定 (1)]]

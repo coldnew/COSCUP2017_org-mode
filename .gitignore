@@ -1,0 +1,11 @@
+slide.html
+slide.pdf
+slide.tex
+/_minted-slide/
+Makefile
+hello.c
+hello.o
+hello
+/hello.dSYM
+/examples/hello-R/result.png
+*.plist

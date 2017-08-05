@@ -1,0 +1,278 @@
+#+TITLE: 演講稿 (草稿)
+#+AUTHOR: coldnew
+#+EMAIL: coldnew.tw@gmail.com
+#+DATE: <2017-08-04 Fri 23:13>
+#+OPTIONS: toc:nil num:nil ^:t
+
+#+STARTUP: logdone
+#+SEQ_TODO: TODO | DONE
+
+#+INFOJS_OPT: view:info
+
+#+LINK: org-mode     http://orgmode.org
+
+* org-mode ?
+
+ [[org-mode][org-mode]] 是類似 [[https://zh.wikipedia.org/zh-tw/Markdown][Markdown]] 的樣板語言，除了用來寫文件外，亦同時具有用來管理待辦事項(TODO lists)、規劃專案、時程管理等強大的功能。
+
+ http://orgmode.org
+
+ 我們可以使用 =TAB= 或是 =S-TAB= 去折疊/展開所有的標題欄。
+
+** 參考別人
+
+ 以下是 Org mode 的几大特性:
+
+    基于大纲的编辑 (outline-based editing)
+    灵活强大的任务管理 (planning)
+    任务计时及统计 (clocking)
+    日程管理 (agendas)
+    快速捕获 (capture)
+    功能丰富的表格操作 (tables)
+    导出到多种外部格式 (exporting)
+    文学编程 (working with source code)
+    移动端支持 (with your mobile phone)
+
+** 快捷鍵使用
+
+   將游標放置在標題欄 (headline) 並使用 =M-right= =M-left= 來切換標題欄的等級 (level)
+
+   你也可以使用 =M-S-right= 或 =M-S-left= 去切換包含子項目的標題欄等級
+
+*** 快速瀏覽
+
+    如果你有在你的 =~/.emacs.d= 設定好以下項目，則可以使用 org speed commands 去瀏覽你的文件
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-use-speed-commands t)
+    #+END_SRC
+
+    快速命令:
+
+    將你的游標放置到標題欄 (headline)  的第一個字元的位置, 確定上面的命令設定好後，你就可以使用下面的命令來快速瀏覽你的文件
+
+    n 下一個標題欄 (headline)
+    p 上一個標題欄 (headline)
+    u 回到父節點
+    c 折疊/展開當前標題欄
+
+    j 快速移動 這個命令會彈出一個選單，看你要根據怎樣的狀況進行移動
+    ? 看還有什麼命令可以用
+
+*** 切換標題欄的等級
+
+    將游標放置在標題欄 (headline) 並使用 =M-right= =M-left= 來切換標題欄的等級 (level)
+
+    你也可以使用 =M-S-right= 或 =M-S-left= 去切換包含子項目的標題欄等級
+
+    當有在 =~/.emacs.d= 設定好以下命令的時候, 我們也可以用 org speed commands 去調整標題欄的等級
+
+    #+BEGIN_SRC emacs-lisp
+      (setq org-use-speed-commands t)
+    #+END_SRC
+
+    快速命令:
+
+    r 將當前標題欄降級 (向右移動)
+    R 將當前標題欄與子項目降級 (向右移動)
+    l 將當前標題欄升級 (向左移動)
+    L 將當前標題欄與子項目升級 (向右移動)
+
+*** 重新擺放標題欄順序
+
+    將游標放置在標題欄 (headline) 並使用 =M-up= =M-down= 來切換標題欄的順序 (order)
+
+    快速命令:
+
+    U 將當前節點往上搬 (包含子項目)
+    D 將當前節點往下搬 (包含子項目)
+
+*** 暫存當前位置
+
+    你也可以使用 =C-c %= (org-mark-ring-push) 暫存當前你移動的位置然後移動到別處
+
+    要切回來的時候用 =C-c &= (org-mark-ring-goto) 就可以切到上一個暫存的位置
+
+** 列表
+
+   | 列表類型 | 表達符號或方法               |
+   |----------+------------------------------|
+   | 無序列表 | - 、 + 、 *                  |
+   | 有序列表 | 1. 或者 1) 開頭              |
+   | 描述列表 | 使用 :: 將描述內容與項目分開 |
+
+   - 這是項目一 :: 項目的定義
+   - 這是項目二
+     + 項目二的子項目一
+     + 項目二的子項目二
+
+   1. 條列式 1
+   2. 條列式 2
+     1) 子項目 1
+     2) 子項目 2
+
+** 格式化字詞
+
+   *粗體*                 /斜體/
+   +刪除線+               H_2 O
+   E=mc^2               =等寬字=
+   _下劃線_
+
+   被格式化的字詞，會根據要輸出的後端 (Latex、HTML) 等進行相對應的轉換
+
+** 程式碼區塊
+
+   輸入 <s 後按下 TAB 展開 #+BEGIN_SRC ... #END_SRC 區塊，你可以透過 C-' 切換到該程式碼的 major-mode 後再切回來
+
+   #+BEGIN_SRC C
+     #include <stdio.h>
+
+     int main(int argc, char *argv[])
+     {
+             printf("Hello, Org-mode!\n");
+             return 0;
+     }
+   #+END_SRC
+
+   #+BEGIN_EXAMPLE
+     Example block 就不會對裡面的內容作而外的格式化
+   #+END_EXAMPLE
+
+** 連結 (Links)
+
+   [[org-mode][org-mode]] 支援很多種不同的連結形式，比如 點我到連結尾巴 或是
+
+   #+BEGIN_EXAMPLE
+     http://www.google.com
+     file:/home/coldnew/test.png
+     news:comp.emacs
+     irc:/irc.com/#emacs
+     mailto:who@email.net
+     file:files/do_mount.sh::5
+     [[file:files/do_mount.sh][mount the file]]
+   #+END_EXAMPLE
+
+   <<<點我到連結尾巴>>>
+
+** 表格建立
+
+   - 使用 =|= 作為表格分隔
+   - 按下 =TAB= 可以再表格內切換
+   - 輸入 =|-= 再按下 =TAB= 可以產生分隔線
+
+   | Name  | Phone | Age |
+   |-------+-------+-----|
+   | Peter |  1234 |  17 |
+   | Anna  |  4321 |  25 |
+
+* 任務管理 [0%]
+
+  [[org-mode][org-mode]] 也很適合用來進行任務管理 (task managment)
+
+** TODO 準備這場演講
+** TODO 演講 gogogo
+** 複選框 (checkbox) [0/3]
+
+   可以用 =M-S-return= (org-insert-todo-heading) 快速增加新的欄位
+
+   - [ ] task 1
+   - [ ] task 2
+   - [ ] task 3
+
+** 標籤 (Tag)
+
+   可以對項目使用 =C-c C-c= 加入標籤
+
+   (標籤具有繼承性，子項目會具有父項目的標籤屬性)
+
+   #+BEGIN_SRC org
+     ,* 工作項目                                                             :work:
+     ,** 專案 A                                                              :prjA:
+     ,*** TODO issue #1234                                                 :issue:
+   #+END_SRC
+
+* Deadline 和 agenda (排程)
+
+  你可以將游標移動到日期上使用 =S-right= 或是 =S-left= 增加/減少日期 (加減一天)
+
+  或是使用 =S-up= 以及 =S-down= 根據游標位置進行調整 (加減年/月/日)
+
+*** TODO 講完這場演講
+    DEADLINE: <2017-08-06 Sun>
+
+*** TODO 回家睡高高
+    DEADLINE: <2017-08-06 Sun>
+
+** 檢查我們的任務排程
+
+   使用 =C-c a < a= 來查看這份檔案的 agenda (排程) 資訊
+
+   在 agenda-view 裡面:
+
+   t 可以將標記為 =TODO= 的項目變成 DONE
+   g 刷新 agenda-view
+   v 選擇觀看 日/星期/月 或者其他狀況的資訊
+
+   使用 =C-c a= 進入到 Agenda 選單:
+
+   a 顯示當日或是本週的任務排程 (agenda)
+   L 顯示目前緩衝區的任務線
+   t 顯示所有的代辦事項 (TODO)
+   T 顯示特定類型的待辦事項 (TODO, DONE ... etc) 選一
+   m 顯示有符合標籤 (tag) 的事項
+   M 顯示有符合標籤 (tag) 的代辦 (TODO) 事項
+   s 根據搜索結果顯示符合的事項
+
+* 捕獲任務 (Capture)
+  :MANUAL:
+  http://orgmode.org/manual/Capture.html
+  :END:
+
+  - 當你正在作某件事，比如正在 live demo
+  - 突然電話響了, 是某個大人物打過來的所以不能掛斷
+  - 你希望紀錄這份對話，但是又不想影響到現在正在做的工作
+  - C-c c (org-capture) 來紀錄這件事
+  - 選擇樣板，將你要紀錄的東西寫下來 =C-c C-c= 離開回去工作
+
+    #+BEGIN_SRC emacs-lisp
+      ;; Set default org file to store note
+      (setq org-default-notes-file (concat org-directory "NOTE.org"))
+
+      ;; Quickly use C-c r to take note
+      (global-set-key (kbd "C-c r") 'org-capture)
+
+      ;; Setup capture template
+      (setq org-capture-templates
+            '(("t" "TODO" entry (file+headline "" "Tasks") "* TODO %?\n %i\n")
+              ("n" "NOTE" entry (file+headline "" "Tasks") "* NOTE %?\n %i\n %a")))
+    #+END_SRC
+
+* 圖片內嵌
+
+  如果使用的是 GUI Emacs 的話，可以透過 =M-x org-toggle-inline-images= 來切換顯示圖片
+
+* 文學邊程
+
+  src_python{return 3 + 3}
+
+* 輸出
+
+  C-c C-e
+
+* TODO Column view
+
+* 總結
+
+  Task notes
+  Tasks and planing
+
+  - simple TODO list manager
+  - Like a day-planner (schedule every task)
+  - GTD (Getting Things Done ala David Allen)
+    - TODO states or tags for main GTD lists
+    - Tags for context and agendas
+  - Detailed time planning and accoundting
+
+* FOOTNOTE
+
+  加入 [fn:1] 然後 C-c C-c 建立 footnote

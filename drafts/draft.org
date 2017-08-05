@@ -1,0 +1,266 @@
+#+TITLE: 演講稿 (草稿)
+#+AUTHOR: coldnew
+#+EMAIL: coldnew.tw@gmail.com
+#+DATE: <2017-08-04 Fri 23:13>
+#+SEQ_TODO: TODO | DONE
+#+STARTUP: logdone
+
+#+LINK: org-mode     http://orgmode.org
+#+LINK: spacemacs    https://github.com/syl20bnr/spacemacs
+#+LINK: emacs        https://www.gnu.org/s/emacs/
+
+* 介紹                                                       :intro:
+
+  - 題目
+
+    org-mode 與工作流: 為何我離不開 emacs
+
+  - 簡介
+
+    如果你在路上抓到使用 Emacs 的人，問說為何繼續用 Emacs ? 十個有九個會說因為 Emacs 有 org-mode。 究竟 org-mode 有何魔力呢? 本次介紹延伸自講者於 2013 年在 COSCUP 的演講「org-mode: Emacs 下的瑞士軍刀」，開頭會先介紹 org-mode，並帶自如何在 Emacs 下透過 org-mode 管理代辦事項、撰寫工作文件 … 等實務上的應用。
+
+  - 時間
+
+    COSCUP 2017 2017/08/07 16:20 ~ 16:40
+
+* 構思                                                          :design:
+
+  在 2013 年我所講的 [[http://coldnew.github.io/COSCUP2013_org-mode/slide.html][Org-mode Emacs 下的瑞士軍刀]] 個人感覺是把大部分的東西基本帶過，但是偏向 『[[https://zh.wikipedia.org/zh-tw/文学编程][文學編程]]』(Literate programming)  的形式。
+
+  (並且由於當時經驗不足，講的很趕)
+
+  這次希望可以針對以下幾點進行進一步的說明：
+
+  - 基本 org-mode 語法介紹 (3 分鐘) <-- 可以捨棄
+
+  - Agenda (5 分鐘)
+
+  - 時間管理 (org-clock-in, org-clock-out) (5 分鐘)
+
+  - Capture (5 分鐘)
+
+  注意到我只有 =20 分鐘= 的時間可以講，所以針對以上東西進行重點介紹。
+
+  這次著重在個人使用 [[org-mode][org-mode]] 於工作上的經驗。
+
+* 前置設定                                                            :elisp:
+
+  這是為了讓這場演講可以順利運作的 elisp 設定，我們在這邊預先設定好一些變數
+
+  這會讓本 DEMO 的範例可以順利運作的函式，請對其使用 =C-c C-c= 進行 eval
+
+  #+BEGIN_SRC emacs-lisp
+      (setq org-directory (file-name-directory (buffer-file-name)))
+
+      (setq org-agenda-files (list org-directory))
+
+      (require 'find-lisp)
+      (setq org-agenda-files
+            (find-lisp-find-files org-directory "\.org$"))
+
+    (setq org-default-notes-file (concat org-directory "TODO.org"))
+  #+END_SRC
+
+* 投影片使用                                                         :elisp:
+  :LOGBOOK:
+  CLOCK: [2017-08-05 Sat 12:23]--[2017-08-05 Sat 12:25] =>  0:02
+  :END:
+
+  此次 DEMO 採用 [[https://github.com/takaxp/org-tree-slide][org-tree-slide]] 進行線上 DEMO 來展示
+
+  #+BEGIN_SRC emacs-lisp
+    (package-install 'org-tree-slide)
+
+    (defun my/slide-show-start ()
+      "Start this slideshow."
+      (interactive)
+      ;; 使用 simple profile
+      (org-tree-slide-simple-profile)
+      ;; 跳過 level 3 標題
+      (setq org-tree-slide-skip-outline-level 3)
+      ;; 啟動 slide
+      (org-tree-slide-mode))
+
+    (defun my/slide-show-stop ()
+      "Stop this slideshow."
+      (interactive)
+      ;; 關閉 slide
+      (org-tree-slide-mode -1))
+
+    (my/slide-show-start)
+    ;; 綁到 C-x [
+    (global-set-key (kbd "C-x [") 'my/slide-show-start)
+    ;; 綁到 C-x ]
+    (global-set-key (kbd "C-x ]") 'my/slide-show-stop)
+  #+END_SRC
+
+  另外，為了讓大家可以看到我按了哪些按鍵，我使用 [[https://github.com/emacsmirror/showkey][showkey]] 搭配以下命令來顯示當下按鍵資訊在 **KEYS** 緩衝區
+
+  #+BEGIN_SRC emacs-lisp
+    (package-install 'showkey)
+
+    (defun my/quick-show-key ()
+      "Create a window below and launch showkey mode"
+      (interactive)
+      (require 'showkey)
+      (showkey-log-mode t)
+      (delete-other-windows)
+      (split-window-vertically (floor (* 0.88 (window-height))))
+      (other-window 1)
+      (switch-to-buffer (get-buffer "*KEYS*"))
+      (other-window 1))
+
+    ;; 綁到 C-x \
+    (global-set-key (kbd "C-x \\") 'my/quick-show-key)
+  #+END_SRC
+
+* 如何安裝 org-mode
+
+  本場次演講現場展示的是 [[org-mode][org-mode]] 9.09 版本，目前 [[emacs][Emacs]] 預設的 org-mode 版本則是 8.x， 因此為了更好的體驗最好升級至最新的版本。
+
+  (如果你是 [[spacemacs][spacemacs]] 的用戶，請參考 [[https://github.com/syl20bnr/spacemacs/tree/master/layers/%252Bemacs/org][Org layer]] 的說明。)
+
+  一般的 [[emacs][Emacs]] 用戶，則請加入以下程式到你的 =~/.emacs.d= 去，這會幫你下載最新的 org-mode
+
+  #+BEGIN_SRC emacs-lisp
+    (add-to-list 'package-archives
+                 '("org" . "http://orgmode.org/elpa/") t)
+  #+END_SRC
+
+  然後更新套件資訊
+
+  : M-x package-refresh-contents
+
+  接下來使用以下方式安裝最新的 [[org-mode][org-mode]] (9.x)
+
+  #+BEGIN_SRC emacs-lisp
+    (package-install 'org-plus-contrib)
+  #+END_SRC
+
+* 基本語法
+
+  不懂語法沒關係，這次的東西看一次就會語法了 ^_^
+
+  推薦閱讀: [[http://coldnew.github.io/COSCUP2013_org-mode/slide.html][COSCUP 2013 - Org-mode : Emcas 下的瑞士軍刀]]
+
+  我們將直接實例展示 [[org-mode][org-mode]] 。
+
+  (setq org-use-speed-commands t)
+
+* 待辦事項 (TODO)                                                      :todo:
+  :MANUAL:
+  https://orgmode.org/manual/TODO-basics.html
+  :END:
+
+  在 [[http://alberthuang314.blogspot.tw/2012/12/blog-post_12.html][寫實驗紀錄或工作日誌的重要性]] 一文中提到了:
+
+  #+BEGIN_QUOTE
+  當日該完成事項是每天一開始的時候, 告訴自己還有哪些工作還沒完成, 每個工作的優先順序是如何, 這樣在寫任何程式之前, 可以在心中先建立一個清單, 工作效率會大幅提升。
+  #+END_QUOTE
+
+** 建立待辦事項
+   :LOGBOOK:
+   CLOCK: [2017-08-05 Sat 12:18]--[2017-08-05 Sat 12:19] =>  0:01
+   :END:
+   :MANUAL:
+   http://orgmode.org/manual/Tracking-TODO-state-changes.html
+   :END:
+
+   對大綱使用 =C-c C-t= 選擇或切換 TODO/DONE 狀態
+
+   (或是使用 =S-<right>= 切換狀態)
+
+*** 參加 COSCUP 2017
+*** 講完這個項目 COSCUP 2017
+
+** 設定
+
+   #+BEGIN_SRC org
+     ,#+SEQ_TODO: TODO(t) WAITING(w) | DONE(d) CANCELLED(c)
+   #+END_SRC
+
+** 任務優先級
+
+* 任務排程 (Agenda)
+
+  Agenda 是 [[org-mode][org-mode]] 下用來追蹤任務狀況的功能，在講他之前我們先來看怎樣將一般的大綱變成任務。
+
+** 我是一般的事項
+
+   我們可以透過 =C-c C-t= (org-todo) 來將項目變成 /待辦事項/
+
+   預設只有 =TODO= 和 =DONE= 的切換
+
+** 增加更多類型
+
+** 厭倦 Agenda View 了嗎
+
+使用  =cfw:open-calendar-buffer=  和 calendar 或是 google canendar 整合
+
+https://github.com/kiwanami/emacs-calfw
+
+** 和 Google 整合
+daily review
+
+weekly review
+
+#+BEGIN_SRC emacs-lisp
+  (package-install 'org-gcal)
+  (require 'calfw)
+#+END_SRC
+
+* 事件捕捉 (Capture)                                                :capture:
+capture ad todo with priority and tags
+
+capture a chrome links for later reading
+
+capture a task with a source code file
+
+* 休息一下                                                :break:cat:
+
+  講到這邊，大約 =15 分鐘了= 。COSCUP 的傳統就是演講超過 15 分鐘，就要放隻貓緩和氣氛，所以我放個 [[https://zh.wikipedia.org/zh-tw/彩虹貓][Nyan Cat]] 在 Emacs 上。
+
+  (本場次主要使用 Emacs 直接進行演講)
+
+  你可以使用以下方式安裝 [[https://github.com/wasamasa/zone-nyan][zone-nyan]] (對下面 src-block 使用 =C-c C-c= 進行 evaluate)
+
+  #+BEGIN_SRC emacs-lisp
+    (package-install 'zone-nyan)
+  #+END_SRC
+
+  然後我們就可以這樣叫出他來 (對下面 src-block 使用 =C-c C-c= 進行 evaluate)
+
+  #+BEGIN_SRC emacs-lisp
+    (require 'zone-nyan)
+    (zone-nyan-preview)
+  #+END_SRC
+
+* 文件產生 (Export)                                                  :export:
+* 有趣的套件
+
+https://github.com/myuhe/org-gcal.el
+
+* 總結
+* 延伸閱讀
+
+  這邊整理我看過覺得不錯的資訊連結。
+
+** 推薦視頻
+
+   - [[https://www.youtube.com/watch?v=fgizHHd7nOo][org mode is awesome]]
+
+   - [[https://www.youtube.com/watch?v=jmZP9To4kv8][我的 Org mode GTD 工作流 - 子龍山人]]
+
+   - [[https://www.youtube.com/watch?v=dljNabciEGg&t=1455s][Literate Devops with Emacs]]
+
+** 推薦文章
+
+   - [[http://doc.norang.ca/org-mode.html][Org Mode - Organize Your Life In Plain Text!]]
+
+** 其他時間/工作管理相關
+
+  - [[http://alberthuang314.blogspot.tw/2012/12/blog-post_12.html][寫實驗紀錄或工作日誌的重要性]]
+
+  - [[https://medium.com/@bobchao/%25E7%2595%25AA%25E8%258C%2584%25E5%25B7%25A5%25E4%25BD%259C%25E6%25B3%2595-fd35fd03adb0][番茄工作法]]
+
+  - [[https://murphymind.blogspot.tw/2007/04/2-getting-things-done.html][{閱讀筆記} 高效能的待辦事項管理法: Getting Things Done (by David Allen)]]
