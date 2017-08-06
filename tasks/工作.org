@@ -9,6 +9,8 @@
 
 如果喜歡 [[https://medium.com/@bobchao/%25E7%2595%25AA%25E8%258C%2584%25E5%25B7%25A5%25E4%25BD%259C%25E6%25B3%2595][番茄工作法]] 的話，可以使用 [[https://github.com/lolownia/org-pomodoro][org-pomodoro]] 這套件。
 
+推薦文章: [[https://alberthuang314.blogspot.tw/2012/12/blog-post_12.html][寫實驗紀錄或工作日誌的重要性]]
+
 * 專案 A                                                               :prjA:
 
 ** DONE 設計電路
